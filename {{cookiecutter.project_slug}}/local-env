@@ -1,0 +1,16 @@
+IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}
+NGINX_IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}:nginx
+DJANGO_IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}:django
+POSTGRES_IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}:postgres
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY='v_xql)e@t=)xwmm1j)*3v9tng%dln(dl55gru1*5ru#pvpa(w='
+DJANGO_ALLOWED_HOSTS=*
+WEB_CONCURRENCY=4
+REDIS_URL=redis://redis:6379/0
+MAILGUN_API_KEY=
+MAILGUN_DOMAIN=
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB={{ cookiecutter.project_slug }}
+POSTGRES_USER={{ cookiecutter.project_slug }}
+POSTGRES_PASSWORD={{ cookiecutter.project_slug }}
