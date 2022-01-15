@@ -1,0 +1,113 @@
+before_script:
+  - export IMAGE=$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME
+  - export NGINX_IMAGE="${IMAGE}:nginx"
+  - export DJANGO_IMAGE="${IMAGE}:django"
+  - export POSTGRES_IMAGE="${IMAGE}:postgres"
+  - export PROJECT_NAME="${CI_PROJECT_NAME}"
+  - export REMOTE_USER="${REMOTE_USER}"
+  - apk add --no-cache openssh-client bash
+  - bash setup_env.sh
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+
+stages:
+  - lint
+  - build
+  - check
+  - backup
+  - staging
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  CACHE_IMAGE: $IMAGE:web
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  POSTGRES_USER: 'lawncare'
+  POSTGRES_PASSWORD: ''
+  POSTGRES_DB: 'test_lawncare'
+  POSTGRES_HOST_AUTH_METHOD: trust
+  
+.deploy-script: &deploy-script
+  - eval "$(ssh-agent -s)"
+  - echo "$CI_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+flake8:
+  stage: lint
+  image: python:3.9-alpine
+  before_script:
+    - pip install -q flake8
+  script:
+    - flake8 app/
+  only:
+    - develop
+
+build:
+  stage: build
+  image:
+    name: docker/compose:latest
+    entrypoint: [""]
+  services:
+    - docker:dind
+  inherit:
+    default: true
+  script:
+    - docker-compose -f build.yml build
+    - docker push $NGINX_IMAGE
+    - docker push $DJANGO_IMAGE
+    - docker push $POSTGRES_IMAGE
+  only:
+    - develop
+
+check exists files:
+  stage: check
+  image: alpine
+  before_script:
+    - export PROJECT_NAME="${CI_PROJECT_NAME}"
+    - export REMOTE_USER="${REMOTE_USER}"
+    - apk add --no-cache openssh-client bash
+  script:
+    - *deploy-script
+    - ssh -p12122 -o StrictHostKeyChecking=no
+      $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER --
+      "[ -d /home/$REMOTE_USER/$PROJECT_NAME ] || mkdir -p /home/$REMOTE_USER/$PROJECT_NAME"
+    - scp -P 12122 -o StrictHostKeyChecking=no
+      -r ./backups/backup.sh ./backups/restore.sh
+      $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER:/home/$REMOTE_USER/$PROJECT_NAME 
+  only:
+    - master
+
+backup before deploy:
+  stage: backup
+  image:
+    name: docker/compose:latest
+    entrypoint: [""]
+  services:
+    - docker:dind
+  script:
+    - *deploy-script
+    - ssh -p12122 -o StrictHostKeyChecking=no
+      $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER --
+      "cd /home/$REMOTE_USER/$PROJECT_NAME && /bin/bash ./backup.sh"
+  only:
+    - master
+
+deploy to stage server:
+  stage: staging
+  image:
+    name: docker/compose:latest
+    entrypoint: [""]
+  services:
+    - docker:dind
+  script:
+    - *deploy-script
+    - scp -P 12122 -o StrictHostKeyChecking=no
+      -r ./.env ./deploy.yml
+      $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER:/home/$REMOTE_USER/$PROJECT_NAME 
+    - ssh -p12122 -o StrictHostKeyChecking=no
+      $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER --
+      "echo $REMOTE_USER > .remote_user && echo $PROJECT_NAME > .project_name"
+    - bash ./deploy.sh
+  when: manual
+  only:
+    - master

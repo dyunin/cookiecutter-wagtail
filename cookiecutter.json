@@ -1,0 +1,17 @@
+{
+  "project_name": "Wagtail Project",
+  "project_slug": "{{ cookiecutter.project_name.lower()|replace(' ', '_')|replace('-', '_')|replace('.', '_')|trim() }}",
+  "description": "The powerful modern website.",
+  "author_name": "Peter Dyunin",
+  "email": "info@dyunin.ru",
+  "domain_name": "arkline.ru",
+  "timezone": "Europe/Moscow",
+  "language_code": "ru-ru",
+  "postgresql_version": [
+    "14.1",
+    "13.5",
+    "12.9",
+    "11.14",
+    "10.19"
+  ]
+}
