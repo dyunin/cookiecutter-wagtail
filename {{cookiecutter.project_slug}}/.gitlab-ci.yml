@@ -23,10 +23,6 @@ variables:
   CACHE_IMAGE: $IMAGE:web
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
-  POSTGRES_USER: 'lawncare'
-  POSTGRES_PASSWORD: ''
-  POSTGRES_DB: 'test_lawncare'
-  POSTGRES_HOST_AUTH_METHOD: trust
   
 .deploy-script: &deploy-script
   - eval "$(ssh-agent -s)"
