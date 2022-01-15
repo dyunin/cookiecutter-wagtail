@@ -1,27 +1,27 @@
 version: '3'
 
 volumes:
-  lawncare_postgres_data: {}
-  lawncare_postgres_data_backups: {}
-  lawncare_static_data: {}
-  lawncare_media_data: {}
+  {{ cookiecutter.project_slug }}_postgres_data: {}
+  {{ cookiecutter.project_slug }}_postgres_data_backups: {}
+  {{ cookiecutter.project_slug }}_static_data: {}
+  {{ cookiecutter.project_slug }}_media_data: {}
 
 services:
   nginx:
     image: "${NGINX_IMAGE}"
-    container_name: nginx_lawncare
+    container_name: nginx_{{ cookiecutter.project_slug }}
     depends_on:
       - django
     volumes:
-      - lawncare_static_data:/usr/src/app/static
-      - lawncare_media_data:/usr/src/app/media
+      - {{ cookiecutter.project_slug }}_static_data:/usr/src/app/static
+      - {{ cookiecutter.project_slug }}_media_data:/usr/src/app/media
     ports:
       - "8888:80"
     restart: always
 
   django:
     image: "${DJANGO_IMAGE}"
-    container_name: django_lawncare
+    container_name: django_{{ cookiecutter.project_slug }}
     depends_on:
       - postgres
       - redis
@@ -29,23 +29,23 @@ services:
       - ./.env
     command: /start
     volumes:
-      - lawncare_static_data:/app/staticfiles
-      - lawncare_media_data:/app/app/media
+      - {{ cookiecutter.project_slug }}_static_data:/app/staticfiles
+      - {{ cookiecutter.project_slug }}_media_data:/app/app/media
     expose:
       - 8000
     restart: always
 
   postgres:
     image: "${POSTGRES_IMAGE}"
-    container_name: postgres_lawncare
+    container_name: postgres_{{ cookiecutter.project_slug }}
     volumes:
-      - lawncare_postgres_data:/var/lib/postgresql/data:Z
-      - lawncare_postgres_data_backups:/backups:z
+      - {{ cookiecutter.project_slug }}_postgres_data:/var/lib/postgresql/data:Z
+      - {{ cookiecutter.project_slug }}_postgres_data_backups:/backups:z
     env_file:
       - ./.env
     restart: always
 
   redis:
     image: redis:6
-    container_name: redis_lawncare
+    container_name: redis_{{ cookiecutter.project_slug }}
     restart: always
