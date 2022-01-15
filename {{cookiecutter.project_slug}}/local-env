@@ -1,3 +1,6 @@
+DJANGO_ADMIN_NAME={{ cookiecutter.admin_name }}
+DJANGO_ADMIN_EMAIL={{ cookiecutter.email }}
+DJANGO_ADMIN_PASSWORD={{ cookiecutter.admin_name }}
 IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}
 NGINX_IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}:nginx
 DJANGO_IMAGE=registry.arkline.ru/django/{{ cookiecutter.project_slug }}:django

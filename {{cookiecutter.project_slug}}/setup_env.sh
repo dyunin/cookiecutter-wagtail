@@ -12,6 +12,9 @@ echo NGINX_IMAGE="${IMAGE}:proxy"                                   >> "$env_fil
 echo DJANGO_IMAGE="${IMAGE}:django"                                 >> "$env_file"
 echo POSTGRES_IMAGE="${IMAGE}:postgres"                             >> "$env_file"  
 
+echo DJANGO_ADMIN_NAME=$DJANGO_ADMIN_NAME                           >> "$env_file"
+echo DJANGO_ADMIN_EMAIL=$DJANGO_ADMIN_EMAIL                         >> "$env_file"
+echo DJANGO_ADMIN_PASSWORD=$DJANGO_ADMIN_PASSWORD                   >> "$env_file"
 echo DJANGO_SETTINGS_MODULE=config.settings.production              >> "$env_file" 
 echo DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY                           >> "$env_file"
 echo DJANGO_ALLOWED_HOSTS=$DJANGO_ALLOWED_HOSTS                     >> "$env_file"
