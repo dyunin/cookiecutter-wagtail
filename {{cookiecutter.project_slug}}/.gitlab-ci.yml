@@ -6,7 +6,7 @@ before_script:
   - export PROJECT_NAME="${CI_PROJECT_NAME}"
   - export REMOTE_USER="${REMOTE_USER}"
   - apk add --no-cache openssh-client bash
-  - bash setup_env.sh
+  - bash make_env.sh
   - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 stages:
