@@ -8,3 +8,4 @@ production-ready Django projects quickly.
 -   For Django 3.2
 -   Works with Python 3.9
 
+## Usage
