@@ -9,3 +9,11 @@ production-ready Django projects quickly.
 -   Works with Python 3.9
 
 ## Usage
+
+First, get Cookiecutter.
+
+    $ pip install "cookiecutter"
+
+Now run it against this repo:
+
+    $ cookiecutter https://gitlab.arkline.ru/django/cookiecutter-wagtail
