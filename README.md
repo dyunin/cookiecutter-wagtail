@@ -17,3 +17,4 @@ First, get Cookiecutter.
 Now run it against this repo:
 
     $ cookiecutter https://gitlab.arkline.ru/django/cookiecutter-wagtail
+
