@@ -4,6 +4,9 @@ app/media
 scss-tool/styles.css
 
 ### Python template
+
+Pipfile*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
