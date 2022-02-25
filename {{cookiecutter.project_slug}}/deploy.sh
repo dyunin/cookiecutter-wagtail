@@ -2,7 +2,7 @@
 
 set -o nounset                              # Treat unset variables as an error
 
-ssh -p12122 -o StrictHostKeyChecking=no $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER << 'ENDSSH'
+ssh -p$SSH_PORT -o StrictHostKeyChecking=no $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER << 'ENDSSH'
   export PROJECT_NAME=$(cat .project_name)
   export REMOTE_USER=$(cat .remote_user)
   cd /home/$REMOTE_USER/$PROJECT_NAME 

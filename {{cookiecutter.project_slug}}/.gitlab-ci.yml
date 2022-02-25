@@ -64,10 +64,10 @@ check exists files:
     - apk add --no-cache openssh-client bash
   script:
     - *deploy-script
-    - ssh -p12122 -o StrictHostKeyChecking=no
+    - ssh -p$SSH_PORT -o StrictHostKeyChecking=no
       $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER --
       "[ -d /home/$REMOTE_USER/$PROJECT_NAME ] || mkdir -p /home/$REMOTE_USER/$PROJECT_NAME"
-    - scp -P 12122 -o StrictHostKeyChecking=no
+    - scp -P $SSH_PORT -o StrictHostKeyChecking=no
       -r ./backups/backup.sh ./backups/restore.sh
       $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER:/home/$REMOTE_USER/$PROJECT_NAME 
   only:
@@ -82,7 +82,7 @@ backup before deploy:
     - docker:dind
   script:
     - *deploy-script
-    - ssh -p12122 -o StrictHostKeyChecking=no
+    - ssh -p$SSH_PORT -o StrictHostKeyChecking=no
       $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER --
       "cd /home/$REMOTE_USER/$PROJECT_NAME && /bin/bash ./backup.sh"
   only:
@@ -97,10 +97,10 @@ deploy to stage server:
     - docker:dind
   script:
     - *deploy-script
-    - scp -P 12122 -o StrictHostKeyChecking=no
+    - scp -P $SSH_PORT -o StrictHostKeyChecking=no
       -r ./.env ./deploy.yml
       $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER:/home/$REMOTE_USER/$PROJECT_NAME 
-    - ssh -p12122 -o StrictHostKeyChecking=no
+    - ssh -p$SSH_PORT -o StrictHostKeyChecking=no
       $REMOTE_USER@$IP_ADDRESS_STAGE_SERVER --
       "echo $REMOTE_USER > .remote_user && echo $PROJECT_NAME > .project_name"
     - bash ./deploy.sh
