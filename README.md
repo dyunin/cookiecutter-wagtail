@@ -1,6 +1,6 @@
 # Cookiecutter Wagtail
 
-Powered by [Cookiecutter](https://github.com/cookiecutter/cookiecutter), Cookiecutter Django is a framework for jumpstarting
+Powered by [Cookiecutter](https://github.com/cookiecutter/cookiecutter), Cookiecutter Wagtail is a framework for jumpstarting
 production-ready Django projects quickly.
 
 ## Features
